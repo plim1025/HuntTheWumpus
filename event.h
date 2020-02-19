@@ -2,6 +2,9 @@
 #define EVENT_H
 
 class Event {
+protected:
+    int x_pos;
+    int y_pos;
 public:
     virtual void percept() = 0;
     virtual void encounter() = 0;

@@ -4,6 +4,7 @@
 Bats::Bats() {
     x_pos = -1;
     y_pos = -1;
+    
 }
 
 Bats::Bats(int x_pos, int y_pos) {

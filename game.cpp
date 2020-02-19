@@ -54,6 +54,7 @@ Game::Game(int map_size, bool debug_mode) {
 
 Game::~Game() {
     // Delete 2D vector
+    // delete [] events;
 }
 
 // Prints map
@@ -82,9 +83,9 @@ std::ostream& operator<<(std::ostream& stream, const Game& game) {
 }
 
 void Game::fill_map() {
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < map_size; i++) {
         map.push_back(std::vector<Room>());
-    for(int j = 0; j < 5; j++)
+    for(int j = 0; j < map_size; j++)
         map[i].push_back(Room());
     }
 }
@@ -94,15 +95,15 @@ void Game::fill_events() {
     srand(time(NULL));
     char arr[6] = {'W', 'B', 'B', 'P', 'P', 'G'};
     for(int x = 1; x <= 6; x++) {
-        int i = rand() % 4;
-        int j = rand() % 4;
+        int i = rand() % map_size;
+        int j = rand() % map_size;
         if(map[i][j].get_has_event())
             x--;
         else {
-            map[i][j].set_event(events[i]);
+            map[i][j].set_event(events[x-1]);
             map[i][j].set_room_char(arr[x-1]);
-            // events[x-1]->set_x_pos(i);
-            // events[x-1]->set_y_pos(j);
+            // events[x-1]->percept();
+            // events[x-1]->percept();
         }
     }
 }

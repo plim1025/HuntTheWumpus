@@ -19,5 +19,5 @@ gold.o: gold.cpp
 prog.o: prog.cpp
 	$(CC) -c prog.cpp
 clean:
-	rm -f *.out *.o *.gch $(exe_file)
+	rm -f *.out *.o *.gch *.d $(exe_file)
 
