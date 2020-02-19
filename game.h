@@ -37,14 +37,14 @@ public:
 
     void fill_map();
     void fill_events();
-    void tile_event();
-    void tile_percept();
-    void spawn_player();
+    void room_event();
+    void room_percept();
     void teleport_player();
     void move_wumpus();
     bool game_over();
     bool won_game();
     void move_or_fire();
+    bool valid_move(char) const;
     void move_player();
     void fire_arrow();
 };

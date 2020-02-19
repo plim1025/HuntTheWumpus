@@ -71,8 +71,8 @@ std::ostream& operator<<(std::ostream& stream, const Game& game) {
             for(int k = 0; k < map_size; k++) {
                 if(game.get_debug_mode() && j == 0)
                     stream << "| " << game.get_map()[i][k]->get_room_char() << " ";
-                else if(j == 1 && i == game.get_x_pos() && j == game.get_y_pos())
-                    stream << "| * |";
+                else if(j == 1 && k == game.get_x_pos() && i == game.get_y_pos())
+                    stream << "| * ";
                 else
                     stream << "|   ";
             }
@@ -109,8 +109,53 @@ void Game::fill_events() {
     }
 }
 
-void Game::spawn_player() {
+void Game::move_or_fire() {
+    std::string user_input = "";
+    while(user_input != "1" && user_input != "2") {
+        std::cout << "Would you like to move (1) or fire an arrow (2)? (You have " << arrows << " arrows left): ";
+        std::getline(std::cin, user_input);
+    }
+    if(user_input == "1")
+        move_player();
+    // else
+        // fire_arrow()
+}
 
+void Game::move_player() {
+    std::string user_input = "";
+    while((user_input != "w" && user_input != "a" && user_input != "s" && user_input != "d") || !valid_move(user_input.c_str()[0])) {
+        std::cout << "Move up (w), move left (a), move down (s), move right (d): ";
+        std::getline(std::cin, user_input);
+    }
+    if(user_input == "w")
+        y_pos--;
+    else if(user_input == "a")
+        x_pos--;
+    else if(user_input == "s")
+        y_pos++;
+    else if(user_input == "d")
+        x_pos++;
+}
+
+bool Game::valid_move(char movement) const {
+    if(movement == 'w') {
+        if(y_pos - 1 >= 0)
+            return true;
+    }
+    else if(movement == 'a') {
+        if(x_pos - 1 >= 0)
+            return true;
+    }
+    else if(movement == 's') {
+        if(y_pos + 1 < map_size)
+            return true;
+    }
+    else if(movement == 'd') {
+        if(x_pos + 1 < map_size)
+            return true;
+    }
+    std::cout << "This move is not possible. ";
+    return false;
 }
 
 bool Game::get_debug_mode() const {

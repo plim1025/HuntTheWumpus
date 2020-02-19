@@ -11,6 +11,7 @@ int main() {
 
     Game game(5, true);
     std::cout << game << std::endl;
-
+    game.move_or_fire();
+    std::cout << game << std::endl;
     return 0;
 }
