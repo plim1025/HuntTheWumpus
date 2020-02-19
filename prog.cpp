@@ -1,4 +1,5 @@
 #include <iostream>
+#include "game.h"
 #include "room.h"
 #include "event.h"
 #include "wumpus.h"
@@ -7,7 +8,9 @@
 #include "gold.h"
 
 int main() {
-    Room room;
-    std::cout << room << std::endl;
+
+    Game game(5, true);
+    std::cout << game << std::endl;
+
     return 0;
 }

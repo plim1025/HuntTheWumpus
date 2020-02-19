@@ -3,7 +3,7 @@
 
 #include "event.h"
 
-class Bats : Event {
+class Bats : public Event {
 public:
     void percept() override;
     void encounter() override;

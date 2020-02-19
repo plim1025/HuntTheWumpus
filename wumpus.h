@@ -3,7 +3,7 @@
 
 #include "event.h"
 
-class Wumpus : Event {
+class Wumpus : public Event {
 public:
     void percept() override;
     void encounter() override;

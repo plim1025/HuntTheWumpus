@@ -3,7 +3,7 @@
 
 #include "event.h"
 
-class Pit : Event {
+class Pit : public Event {
 public:
     void percept() override;
     void encounter() override;

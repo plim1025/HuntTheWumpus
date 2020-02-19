@@ -3,7 +3,7 @@
 
 #include "event.h"
 
-class Gold : Event {
+class Gold : public Event {
 public:
     void percept() override;
     void encounter() override;
