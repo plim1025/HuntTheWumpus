@@ -1,7 +1,7 @@
 CC = g++
 exe_file = HuntTheWumpus
 $(exe_file): game.o room.o event.o wumpus.o bats.o pit.o gold.o prog.o
-	$(CC) -g game.o room.o event.o wumpus.o bats.o pit.o gold.o prog.o -o $(exe_file)
+	$(CC) -g -std=c++11 game.o room.o event.o wumpus.o bats.o pit.o gold.o prog.o -o $(exe_file)
 game.o: game.cpp
 	$(CC) -c game.cpp
 room.o: room.cpp
