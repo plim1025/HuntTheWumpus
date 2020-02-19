@@ -3,16 +3,11 @@
 #include <vector>
 #include <cstdlib>
 
-#define WUMPUS 1
-#define BATS 2
-#define PIT 3
-#define GOLD 4
-
 Room::Room() {
     map_size = 4;
     map = std::vector<std::vector<char>> (map_size, std::vector<char> (map_size, ' '));
     fill_events();
-    debug_mode = true;
+    debug_mode = false;
 }
 
 Room::~Room() {
@@ -28,8 +23,8 @@ std::ostream& operator<<(std::ostream& stream, const Room& room) {
         stream << "+" << std::endl;
         for(int j = 0; j < 3; j++) {
             for(int k = 0; k < map_size; k++) {
-                if(room.get_debug_mode())
-                    stream << "| " << room.get_map()[j][k] << " ";
+                if(room.get_debug_mode() && j == 0)
+                    stream << "| " << room.get_map()[i][k] << " ";
                 else
                     stream << "|   ";
             }
@@ -39,17 +34,19 @@ std::ostream& operator<<(std::ostream& stream, const Room& room) {
     for(int i = 0; i < map_size; i++)
         stream << "+---";
     stream << "+" << std::endl;
-
     return stream;
 }
 
 void Room::fill_events() {
     srand(time(NULL));
-    int arr[4] = {WUMPUS, BATS, PIT, GOLD};
-    for(int x = 1; x <= 4; x++) {
+    char arr[6] = {'W', 'B', 'B', 'P', 'P', 'G'};
+    for(int x = 1; x <= 6; x++) {
         int i = rand() % 4;
         int j = rand() % 4;
-        map[i][j] = arr[i];
+        if(map[i][j] != ' ')
+            x--;
+        else
+            map[i][j] = arr[x-1];
     }
 }
 
