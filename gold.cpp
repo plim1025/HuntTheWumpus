@@ -18,19 +18,3 @@ void Gold::percept() {
 void Gold::encounter() {
     std::cout << "You found the gold!" << std::endl;
 }
-
-int Gold::get_x_pos() const {
-    return x_pos;
-}
-
-int Gold::get_y_pos() const {
-    return y_pos;
-}
-
-void Gold::set_x_pos(int x_pos) {
-    this->x_pos = x_pos;
-}
-
-void Gold::set_y_pos(int y_pos) {
-    this->y_pos = y_pos;
-}

@@ -39,6 +39,7 @@ public:
     void fill_events();
     void room_event();
     void room_percept();
+    void spawn_player();
     void teleport_player();
     void move_wumpus();
     bool game_over();

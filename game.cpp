@@ -16,8 +16,7 @@ Game::Game() {
     fill_events();
     wumpus_killed = false;
     gold_taken = false;
-    spawn_x = rand() % map_size;
-    spawn_y = rand() % map_size;
+    spawn_player();
     x_pos = spawn_x;
     y_pos = spawn_y;
     events[0] = new Wumpus();
@@ -34,6 +33,12 @@ Game::Game(int map_size, bool debug_mode) {
     srand(time(NULL));
     this->map_size = map_size;
     this->debug_mode = debug_mode;
+    events[0] = new Wumpus();
+    events[1] = new Bats();
+    events[2] = new Bats();
+    events[3] = new Pit();
+    events[4] = new Pit();
+    events[5] = new Gold();
     fill_map();
     fill_events();
     wumpus_killed = false;
@@ -42,12 +47,6 @@ Game::Game(int map_size, bool debug_mode) {
     spawn_y = rand() % map_size;
     x_pos = spawn_x;
     y_pos = spawn_y;
-    events[0] = new Wumpus();
-    events[1] = new Bats();
-    events[2] = new Bats();
-    events[3] = new Pit();
-    events[4] = new Pit();
-    events[5] = new Gold();
     arrows = 3;
     player_alive = true;
 }
@@ -85,8 +84,8 @@ std::ostream& operator<<(std::ostream& stream, const Game& game) {
 void Game::fill_map() {
     for(int i = 0; i < map_size; i++) {
         map.push_back(std::vector<Room>());
-    for(int j = 0; j < map_size; j++)
-        map[i].push_back(Room());
+        for(int j = 0; j < map_size; j++)
+            map[i].push_back(Room());
     }
 }
 
@@ -102,10 +101,25 @@ void Game::fill_events() {
         else {
             map[i][j].set_event(events[x-1]);
             map[i][j].set_room_char(arr[x-1]);
-            // events[x-1]->percept();
-            // events[x-1]->percept();
+            events[x-1]->set_x_pos(i);
+            events[x-1]->set_y_pos(j);
         }
     }
+}
+
+void Game::spawn_player() {
+    srand(time(NULL));
+    int num_empty_rooms = map_size * map_size - 6;
+    int rand_room = rand() % num_empty_rooms;
+    int row = 0;
+    int col = 0;
+    int event;
+    // while(rand_room > 0) {
+    //     map[row][col]
+    //     if(col + 1 == map_size) {
+    //         row
+    //     }
+    // }
 }
 
 void Game::move_or_fire() {
