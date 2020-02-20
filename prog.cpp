@@ -26,11 +26,12 @@ int main(int argc, char**argv) {
     return 0;
 }
 
+// Handles command line arguments - returns true if valid, false otherwise
 bool handle_command(int argc, char* map_size, char* debug_mode) {
-    int map_size_int = atoi(map_size);
-    std::string debug_mode_string(debug_mode);
     if(argc != 3)
         return false;
+    int map_size_int = atoi(map_size);
+    std::string debug_mode_string(debug_mode);
     if(atoi(map_size) < 4) {
         std::cout << "Map size must be at least 4" << std::endl;
         return false;
@@ -42,6 +43,7 @@ bool handle_command(int argc, char* map_size, char* debug_mode) {
     return true;
 }
 
+// Converts cstring debug mode into bool
 bool get_debug_mode(char* debug_c_str) {
     std::string debug_str(debug_c_str);
     return debug_str == "true" ? true : false;

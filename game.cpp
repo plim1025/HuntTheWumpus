@@ -8,6 +8,7 @@
 #include <vector>
 #include <cstdlib>
 
+// Game default constructor
 Game::Game() {
     srand(time(NULL));
     map_size = 4;
@@ -29,6 +30,7 @@ Game::Game() {
     player_alive = true;
 }
 
+// Game normal constructor
 Game::Game(int map_size, bool debug_mode) {
     srand(time(NULL));
     this->map_size = map_size;
@@ -50,12 +52,13 @@ Game::Game(int map_size, bool debug_mode) {
     player_alive = true;
 }
 
+// Game destructor
 Game::~Game() {
     for(int i = 0; i < 6; i++)
         delete events[i];
 }
 
-// Prints map
+// Prints map, accounting for debug mode
 std::ostream& operator<<(std::ostream& stream, const Game& game) {
     int map_size = game.get_map_size();
     for(int i = 0; i < map_size; i++) {
@@ -80,6 +83,7 @@ std::ostream& operator<<(std::ostream& stream, const Game& game) {
     return stream;
 }
 
+// Fills map with 2D array of rooms
 void Game::fill_map() {
     for(int i = 0; i < map_size; i++) {
         map.push_back(std::vector<Room>());
@@ -106,6 +110,7 @@ void Game::fill_events() {
     }
 }
 
+// Sets integer references to random empty room coordinates
 void Game::set_random_room(int&x, int&y) {
     srand(time(NULL));
     int rand_x;
@@ -118,6 +123,7 @@ void Game::set_random_room(int&x, int&y) {
     y = rand_y;
 }
 
+// Asks player to either move or fire arrows and carries out functionality
 void Game::move_or_fire() {
     std::string input = "";
     while((input != "W" && input != "A" && input != "S" && input != "D" && input != "w" &&
@@ -132,6 +138,7 @@ void Game::move_or_fire() {
         move_player(input.c_str()[0]);
 }
 
+// Moves player specified direction
 void Game::move_player(char direction) {
     if(direction == 'w' || direction == 'W')
         y_pos--;
@@ -143,6 +150,7 @@ void Game::move_player(char direction) {
         x_pos++;
 }
 
+// Fires arrow specified direction
 void Game::fire_arrow(char direction) {
     srand(time(NULL));
     arrows--;
@@ -161,6 +169,7 @@ void Game::fire_arrow(char direction) {
         teleport_wumpus();
 }
 
+// Resets wumpus room and sets wumpus status to killed
 void Game::kill_wumpus() {
     wumpus_killed = true;
     std::cout << "Wumpus killed" << std::endl;
@@ -169,6 +178,7 @@ void Game::kill_wumpus() {
     map[wumpus_y][wumpus_x].set_room_char(' ');
 }
 
+// Teleports wumpus to random empty room
 void Game::teleport_wumpus() {
     // Set old room to have no event
     int wumpus_x = events[0]->get_x_pos();
@@ -183,6 +193,7 @@ void Game::teleport_wumpus() {
     map[rand_y][rand_x].set_room_char('W');
 }
 
+// Checks if given direction is valid to move - returns true if yes, false otherwise
 bool Game::valid_move(char direction) const {
     if(direction == 'w' || direction == 'W') {
         if(y_pos - 1 >= 0)
@@ -203,6 +214,7 @@ bool Game::valid_move(char direction) const {
     return false;
 }
 
+// Checks if enough arrows to fire one
 bool Game::valid_shot(std::string input) const {
     // If player did not select to shoot, return true
     if(input.length() < 2)
@@ -215,6 +227,7 @@ bool Game::valid_shot(std::string input) const {
     }
 }
 
+// Teleports player to random room (not accounting for emptiness)
 void Game::teleport_player() {
     srand(time(NULL));
     int rand_x = rand() % map_size;
@@ -262,6 +275,7 @@ void Game::room_percept() {
         events[5]->percept();
 }
 
+// Checks if game is over, returns true if yes, false otherwise
 bool Game::game_over() {
     // If player dead
     if(!player_alive)
@@ -276,6 +290,7 @@ bool Game::game_over() {
         return false;
 }
 
+// Prints message when game ends based on what occurred
 void Game::print_end_message() {
     // If player escapes with gold
     if(gold_taken && x_pos == spawn_x && y_pos == spawn_y)
@@ -287,22 +302,27 @@ void Game::print_end_message() {
         std::cout << "You lose." << std::endl;
 }
 
+// Returns whether game is in debug mode or not
 bool Game::get_debug_mode() const {
     return debug_mode;
 }
 
+// Returns map size as integer
 int Game::get_map_size() const {
     return map_size;
 }
 
+// Returns x position of player
 int Game::get_x_pos() const {
     return x_pos;
 }
 
+// Returns y position of player
 int Game::get_y_pos() const {
     return y_pos;
 }
 
+// Returns entire 2D vector of rooms
 std::vector<std::vector<Room>> Game::get_map() const {
     return map;
 }
