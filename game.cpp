@@ -100,8 +100,8 @@ void Game::fill_events() {
         else {
             map[i][j].set_event(events[x-1]);
             map[i][j].set_room_char(arr[x-1]);
-            events[x-1]->set_x_pos(i);
-            events[x-1]->set_y_pos(j);
+            events[x-1]->set_x_pos(j);
+            events[x-1]->set_y_pos(i);
         }
     }
 }
@@ -144,15 +144,23 @@ void Game::move_player(char direction) {
 }
 
 void Game::fire_arrow(char direction) {
-    // if(direction == 'w' || direction == 'W') {
-
-    // }
-    // else if(direction == 'a' || direction == 'A')
-
-    // else if(direction == 's' || direction == 'S')
-
-    // else if(direction == 'd' || direction == 'D')
-
+    int wumpus_x = events[0]->get_x_pos();
+    int wumpus_y = events[0]->get_y_pos();
+    if((direction == 'w' || direction == 'W') && ((wumpus_x == x_pos && wumpus_y == y_pos - 1) || (wumpus_x == x_pos && wumpus_y == y_pos - 2) || (wumpus_x == x_pos && wumpus_y == y_pos - 3))) {
+        wumpus_killed = true;
+        std::cout << "Wumpus killed" << std::endl;
+    } else if((direction == 'a' || direction == 'A') && ((wumpus_x == x_pos - 1 && wumpus_y == y_pos) || (wumpus_x == x_pos - 2 && wumpus_y == y_pos) || (wumpus_x == x_pos - 3 && wumpus_y == y_pos))) {
+        wumpus_killed = true;
+        std::cout << "Wumpus killed" << std::endl;
+    } else if((direction == 's' || direction == 'S') && ((wumpus_x == x_pos && wumpus_y == y_pos + 1) || (wumpus_x == x_pos && wumpus_y == y_pos + 2) || (wumpus_x == x_pos && wumpus_y == y_pos + 3))) {
+        wumpus_killed = true;
+        std::cout << "Wumpus killed" << std::endl;
+    } else if((direction == 'd' || direction == 'D') && ((wumpus_x == x_pos + 1 && wumpus_y == y_pos) || (wumpus_x == x_pos + 2 && wumpus_y == y_pos) || (wumpus_x == x_pos + 3 && wumpus_y == y_pos))) {
+        wumpus_killed = true;
+        std::cout << "Wumpus killed" << std::endl;
+    }
+    // else
+    // teleport_wumpus();
 }
 
 bool Game::valid_move(char direction) const {
