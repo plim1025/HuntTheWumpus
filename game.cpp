@@ -12,6 +12,12 @@ Game::Game() {
     srand(time(NULL));
     map_size = 4;
     debug_mode = false;
+    events[0] = new Wumpus();
+    events[1] = new Bats();
+    events[2] = new Bats();
+    events[3] = new Pit();
+    events[4] = new Pit();
+    events[5] = new Gold();
     fill_map();
     fill_events();
     wumpus_killed = false;
@@ -19,12 +25,6 @@ Game::Game() {
     spawn_player();
     x_pos = spawn_x;
     y_pos = spawn_y;
-    events[0] = new Wumpus();
-    events[1] = new Bats();
-    events[2] = new Bats();
-    events[3] = new Pit();
-    events[4] = new Pit();
-    events[5] = new Gold();
     arrows = 3;
     player_alive = true;
 }
@@ -43,8 +43,7 @@ Game::Game(int map_size, bool debug_mode) {
     fill_events();
     wumpus_killed = false;
     gold_taken = false;
-    spawn_x = rand() % map_size;
-    spawn_y = rand() % map_size;
+    spawn_player();
     x_pos = spawn_x;
     y_pos = spawn_y;
     arrows = 3;
@@ -109,17 +108,14 @@ void Game::fill_events() {
 
 void Game::spawn_player() {
     srand(time(NULL));
-    int num_empty_rooms = map_size * map_size - 6;
-    int rand_room = rand() % num_empty_rooms;
-    int row = 0;
-    int col = 0;
-    int event;
-    // while(rand_room > 0) {
-    //     map[row][col]
-    //     if(col + 1 == map_size) {
-    //         row
-    //     }
-    // }
+    int x;
+    int y;
+    do {
+        x = rand() % map_size;
+        y = rand() % map_size;
+    } while(map[y][x].get_has_event());
+    spawn_x = x;
+    spawn_y = y;
 }
 
 void Game::move_or_fire() {
