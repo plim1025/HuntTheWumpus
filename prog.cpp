@@ -8,12 +8,18 @@
 #include "gold.h"
 
 int main() {
-    // error handle command line arguments (map size at least 4)
-    Game game(10, true);
+    // error handle command line arguments (map size at least 3)
+    Game game(4, true);
     std::cout << game << std::endl;
-    while(true) {
+    while(!game.game_over()) {
         game.move_or_fire();
+        game.room_percept();
+        game.room_event();
         std::cout << game << std::endl;
     }
+    if(game.won_game())
+        std::cout << "You win!" << std::endl;
+    else
+        std::cout << "You lose!" << std::endl;
     return 0;
 }

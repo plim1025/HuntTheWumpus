@@ -23,6 +23,8 @@ Game::Game() {
     wumpus_killed = false;
     gold_taken = false;
     set_random_room(x_pos, y_pos);
+    spawn_x = x_pos;
+    spawn_y = y_pos;
     arrows = 3;
     player_alive = true;
 }
@@ -42,13 +44,15 @@ Game::Game(int map_size, bool debug_mode) {
     wumpus_killed = false;
     gold_taken = false;
     set_random_room(x_pos, y_pos);
+    spawn_x = x_pos;
+    spawn_y = y_pos;
     arrows = 3;
     player_alive = true;
 }
 
 Game::~Game() {
-    // Delete 2D vector
-    // delete [] events;
+    for(int i = 0; i < 6; i++)
+        delete events[i];
 }
 
 // Prints map
@@ -140,23 +144,28 @@ void Game::move_player(char direction) {
 }
 
 void Game::fire_arrow(char direction) {
+    srand(time(NULL));
     int wumpus_x = events[0]->get_x_pos();
     int wumpus_y = events[0]->get_y_pos();
-    if((direction == 'w' || direction == 'W') && ((wumpus_x == x_pos && wumpus_y == y_pos - 1) || (wumpus_x == x_pos && wumpus_y == y_pos - 2) || (wumpus_x == x_pos && wumpus_y == y_pos - 3))) {
-        wumpus_killed = true;
-        std::cout << "Wumpus killed" << std::endl;
-    } else if((direction == 'a' || direction == 'A') && ((wumpus_x == x_pos - 1 && wumpus_y == y_pos) || (wumpus_x == x_pos - 2 && wumpus_y == y_pos) || (wumpus_x == x_pos - 3 && wumpus_y == y_pos))) {
-        wumpus_killed = true;
-        std::cout << "Wumpus killed" << std::endl;
-    } else if((direction == 's' || direction == 'S') && ((wumpus_x == x_pos && wumpus_y == y_pos + 1) || (wumpus_x == x_pos && wumpus_y == y_pos + 2) || (wumpus_x == x_pos && wumpus_y == y_pos + 3))) {
-        wumpus_killed = true;
-        std::cout << "Wumpus killed" << std::endl;
-    } else if((direction == 'd' || direction == 'D') && ((wumpus_x == x_pos + 1 && wumpus_y == y_pos) || (wumpus_x == x_pos + 2 && wumpus_y == y_pos) || (wumpus_x == x_pos + 3 && wumpus_y == y_pos))) {
-        wumpus_killed = true;
-        std::cout << "Wumpus killed" << std::endl;
-    }
-    else
+    if((direction == 'w' || direction == 'W') && ((wumpus_x == x_pos && wumpus_y == y_pos - 1) || (wumpus_x == x_pos && wumpus_y == y_pos - 2) || (wumpus_x == x_pos && wumpus_y == y_pos - 3)))
+        kill_wumpus();
+    else if((direction == 'a' || direction == 'A') && ((wumpus_x == x_pos - 1 && wumpus_y == y_pos) || (wumpus_x == x_pos - 2 && wumpus_y == y_pos) || (wumpus_x == x_pos - 3 && wumpus_y == y_pos)))
+        kill_wumpus();
+    else if((direction == 's' || direction == 'S') && ((wumpus_x == x_pos && wumpus_y == y_pos + 1) || (wumpus_x == x_pos && wumpus_y == y_pos + 2) || (wumpus_x == x_pos && wumpus_y == y_pos + 3)))
+        kill_wumpus();
+    else if((direction == 'd' || direction == 'D') && ((wumpus_x == x_pos + 1 && wumpus_y == y_pos) || (wumpus_x == x_pos + 2 && wumpus_y == y_pos) || (wumpus_x == x_pos + 3 && wumpus_y == y_pos)))
+        kill_wumpus();
+    // 75% chance wumpus teleports if miss arrow
+    else if(rand() % 4 != 0)
         teleport_wumpus();
+}
+
+void Game::kill_wumpus() {
+    wumpus_killed = true;
+    std::cout << "Wumpus killed" << std::endl;
+    int wumpus_x = events[0]->get_x_pos();
+    int wumpus_y = events[0]->get_y_pos();
+    map[wumpus_y][wumpus_x].set_room_char(' ');
 }
 
 void Game::teleport_wumpus() {
@@ -191,6 +200,68 @@ bool Game::valid_move(char direction) const {
     }
     std::cout << "This move is not possible. ";
     return false;
+}
+
+void Game::teleport_player() {
+    srand(time(NULL));
+    int rand_x = rand() % map_size;
+    int rand_y = rand() % map_size;
+    x_pos = rand_x;
+    y_pos = rand_y;
+    room_percept();
+    room_event();
+}
+
+// Checks player's current tile for events and performs action based on it
+void Game::room_event() {
+    char event_char = map[y_pos][x_pos].get_room_char();
+    if(event_char == 'W') {
+        events[0]->encounter();
+        player_alive = false;
+    } else if(event_char == 'B') {
+        events[1]->encounter();
+        teleport_player();
+    } else if(event_char == 'P') {
+        events[3]->encounter();
+        player_alive = false;
+    } else if(event_char == 'G') {
+        events[5]->encounter();
+        int gold_x = events[5]->get_x_pos();
+        int gold_y = events[5]->get_y_pos();
+        map[gold_y][gold_x].set_room_char(' ');
+        gold_taken = true;
+    }
+}
+
+// Checks player's surrounding tiles (not diagonal) for events and calls their percepts
+void Game::room_percept() {
+
+}
+
+bool Game::game_over() {
+    // If player dead
+    if(!player_alive)
+        return true;
+    // If player escapes with gold
+    else if(gold_taken && x_pos == spawn_x && y_pos == spawn_y)
+        return true;
+    // If player takes gold and kills wumpus
+    else if(gold_taken && wumpus_killed)
+        return true;
+    else
+        return false;
+}
+
+bool Game::won_game() {
+    if(!player_alive)
+        return false;
+    // If player escapes with gold
+    else if(gold_taken && x_pos == spawn_x && y_pos == spawn_y)
+        return true;
+    // If player takes gold and kills wumpus
+    else if(gold_taken && wumpus_killed)
+        return true;
+    std::cout << "Won_game was called in an invalid location" << std::endl;
 }
 
 bool Game::get_debug_mode() const {

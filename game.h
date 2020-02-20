@@ -40,7 +40,9 @@ public:
     void room_event();
     void room_percept();
     void set_random_room(int&, int&);
+    void teleport_player();
     void teleport_wumpus();
+    void kill_wumpus();
     bool game_over();
     bool won_game();
     void move_or_fire();
