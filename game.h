@@ -39,9 +39,8 @@ public:
     void fill_events();
     void room_event();
     void room_percept();
-    void spawn_player();
-    void teleport_player();
-    void move_wumpus();
+    void set_random_room(int&, int&);
+    void teleport_wumpus();
     bool game_over();
     bool won_game();
     void move_or_fire();

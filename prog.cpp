@@ -9,7 +9,7 @@
 
 int main() {
     // error handle command line arguments (map size at least 4)
-    Game game(30, true);
+    Game game(10, true);
     std::cout << game << std::endl;
     while(true) {
         game.move_or_fire();

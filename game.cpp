@@ -22,9 +22,7 @@ Game::Game() {
     fill_events();
     wumpus_killed = false;
     gold_taken = false;
-    spawn_player();
-    x_pos = spawn_x;
-    y_pos = spawn_y;
+    set_random_room(x_pos, y_pos);
     arrows = 3;
     player_alive = true;
 }
@@ -43,9 +41,7 @@ Game::Game(int map_size, bool debug_mode) {
     fill_events();
     wumpus_killed = false;
     gold_taken = false;
-    spawn_player();
-    x_pos = spawn_x;
-    y_pos = spawn_y;
+    set_random_room(x_pos, y_pos);
     arrows = 3;
     player_alive = true;
 }
@@ -106,16 +102,16 @@ void Game::fill_events() {
     }
 }
 
-void Game::spawn_player() {
+void Game::set_random_room(int&x, int&y) {
     srand(time(NULL));
-    int x;
-    int y;
+    int rand_x;
+    int rand_y;
     do {
-        x = rand() % map_size;
-        y = rand() % map_size;
-    } while(map[y][x].get_has_event());
-    spawn_x = x;
-    spawn_y = y;
+        rand_x = rand() % map_size;
+        rand_y = rand() % map_size;
+    } while(map[rand_y][rand_x].get_has_event());
+    x = rand_x;
+    y = rand_y;
 }
 
 void Game::move_or_fire() {
@@ -159,8 +155,22 @@ void Game::fire_arrow(char direction) {
         wumpus_killed = true;
         std::cout << "Wumpus killed" << std::endl;
     }
-    // else
-    // teleport_wumpus();
+    else
+        teleport_wumpus();
+}
+
+void Game::teleport_wumpus() {
+    // Set old room to have no event
+    int wumpus_x = events[0]->get_x_pos();
+    int wumpus_y = events[0]->get_y_pos();
+    map[wumpus_y][wumpus_x].set_room_char(' ');
+    // Set new room to have wumpus event
+    int rand_x;
+    int rand_y;
+    set_random_room(rand_x, rand_y);
+    events[0]->set_x_pos(rand_x);
+    events[0]->set_y_pos(rand_y);
+    map[rand_y][rand_x].set_room_char('W');
 }
 
 bool Game::valid_move(char direction) const {
