@@ -122,8 +122,8 @@ void Game::move_or_fire() {
     std::string input = "";
     while((input != "W" && input != "A" && input != "S" && input != "D" && input != "w" &&
     input != "a" && input != "s" && input != "d" && input != " W" && input != " A" && input != " S" &&
-    input != " D" && input != " w" && input != " a" && input != " s" && input != " d") || !valid_move(input.c_str()[0])) {
-        std::cout << "Move with WASD. To fire an arrow, you must place a space followed by the direction, indicated with WASD: ";
+    input != " D" && input != " w" && input != " a" && input != " s" && input != " d") || !valid_move(input.c_str()[0]) || !valid_shot(input)) {
+        std::cout << "Move with WASD. To fire an arrow, you must place a space followed by the direction, indicated with WASD (You have " << arrows << " left): ";
         std::getline(std::cin, input);
     }
     if(input.c_str()[0] == ' ')
@@ -145,6 +145,7 @@ void Game::move_player(char direction) {
 
 void Game::fire_arrow(char direction) {
     srand(time(NULL));
+    arrows--;
     int wumpus_x = events[0]->get_x_pos();
     int wumpus_y = events[0]->get_y_pos();
     if((direction == 'w' || direction == 'W') && ((wumpus_x == x_pos && wumpus_y == y_pos - 1) || (wumpus_x == x_pos && wumpus_y == y_pos - 2) || (wumpus_x == x_pos && wumpus_y == y_pos - 3)))
@@ -202,6 +203,18 @@ bool Game::valid_move(char direction) const {
     return false;
 }
 
+bool Game::valid_shot(std::string input) const {
+    // If player did not select to shoot, return true
+    if(input.length() < 2)
+        return true;
+    if(arrows > 0)
+        return true;
+    else {
+        std::cout << "Not enough arrows." << std::endl;
+        return false;
+    }
+}
+
 void Game::teleport_player() {
     srand(time(NULL));
     int rand_x = rand() % map_size;
@@ -235,7 +248,18 @@ void Game::room_event() {
 
 // Checks player's surrounding tiles (not diagonal) for events and calls their percepts
 void Game::room_percept() {
-
+    Room upper = (y_pos + 1 < map_size) ? map[y_pos+1][x_pos] : Room();
+    Room lower = (y_pos - 1 >= 0) ? map[y_pos-1][x_pos] : Room();
+    Room right = (x_pos + 1 < map_size) ? map[y_pos][x_pos+1] : Room();
+    Room left = (x_pos - 1 >= 0) ? map[y_pos][x_pos-1] : Room();
+    if(upper.get_room_char() == 'W' || lower.get_room_char() == 'W' || right.get_room_char() == 'W' || left.get_room_char() == 'W')
+        events[0]->percept();
+    if(upper.get_room_char() == 'B' || lower.get_room_char() == 'B' || right.get_room_char() == 'B' || left.get_room_char() == 'B')
+        events[1]->percept();
+    if(upper.get_room_char() == 'P' || lower.get_room_char() == 'P' || right.get_room_char() == 'P' || left.get_room_char() == 'P')
+        events[3]->percept();
+    if(upper.get_room_char() == 'G' || lower.get_room_char() == 'G' || right.get_room_char() == 'G' || left.get_room_char() == 'G')
+        events[5]->percept();
 }
 
 bool Game::game_over() {
@@ -246,22 +270,21 @@ bool Game::game_over() {
     else if(gold_taken && x_pos == spawn_x && y_pos == spawn_y)
         return true;
     // If player takes gold and kills wumpus
-    else if(gold_taken && wumpus_killed)
+    else if(gold_taken && wumpus_killed && x_pos == spawn_x && y_pos == spawn_y)
         return true;
     else
         return false;
 }
 
-bool Game::won_game() {
-    if(!player_alive)
-        return false;
+void Game::print_end_message() {
     // If player escapes with gold
-    else if(gold_taken && x_pos == spawn_x && y_pos == spawn_y)
-        return true;
+    if(gold_taken && x_pos == spawn_x && y_pos == spawn_y)
+        std::cout << "Escaped with the gold, you win." << std::endl;
     // If player takes gold and kills wumpus
-    else if(gold_taken && wumpus_killed)
-        return true;
-    std::cout << "Won_game was called in an invalid location" << std::endl;
+    else if(gold_taken && wumpus_killed && x_pos == spawn_x && y_pos == spawn_y)
+        std::cout << "Killed the wumpus and collected gold, you win." << std::endl;
+    else if(!player_alive)
+        std::cout << "You lose." << std::endl;
 }
 
 bool Game::get_debug_mode() const {

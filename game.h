@@ -44,9 +44,10 @@ public:
     void teleport_wumpus();
     void kill_wumpus();
     bool game_over();
-    bool won_game();
+    void print_end_message();
     void move_or_fire();
     bool valid_move(char) const;
+    bool valid_shot(std::string) const;
     void move_player(char);
     void fire_arrow(char);
 };
