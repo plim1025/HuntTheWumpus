@@ -10,7 +10,6 @@
 
 // Game default constructor
 Game::Game() {
-    srand(time(NULL));
     map_size = 4;
     debug_mode = false;
     events[0] = new Wumpus();
@@ -32,7 +31,6 @@ Game::Game() {
 
 // Game normal constructor
 Game::Game(int map_size, bool debug_mode) {
-    srand(time(NULL));
     this->map_size = map_size;
     this->debug_mode = debug_mode;
     events[0] = new Wumpus();
@@ -50,6 +48,30 @@ Game::Game(int map_size, bool debug_mode) {
     spawn_y = y_pos;
     arrows = 3;
     player_alive = true;
+}
+
+Game& Game::operator=(const Game& old_game) {
+    this->map_size = old_game.map_size;
+    this->debug_mode = old_game.debug_mode;
+    for(int i = 0; i < 6; i++)
+        delete events[i];
+    events[0] = new Wumpus();
+    events[1] = new Bats();
+    events[2] = new Bats();
+    events[3] = new Pit();
+    events[4] = new Pit();
+    events[5] = new Gold();
+    map = std::vector<std::vector<Room>>();
+    fill_map();
+    fill_events();
+    wumpus_killed = false;
+    gold_taken = false;
+    set_random_room(x_pos, y_pos);
+    spawn_x = x_pos;
+    spawn_y = y_pos;
+    arrows = 3;
+    player_alive = true;
+    return *this;
 }
 
 // Game destructor
@@ -300,6 +322,16 @@ void Game::print_end_message() {
         std::cout << "Killed the wumpus and collected gold, you win." << std::endl;
     else if(!player_alive)
         std::cout << "You lose." << std::endl;
+}
+
+void Game::reset_game() {
+    wumpus_killed = false;
+    gold_taken = false;
+    set_random_room(x_pos, y_pos);
+    spawn_x = x_pos;
+    spawn_y = y_pos;
+    arrows = 3;
+    player_alive = true;
 }
 
 // Returns whether game is in debug mode or not

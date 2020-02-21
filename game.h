@@ -27,6 +27,7 @@ private:
 public:
     Game();
     Game(int, bool);
+    Game& operator=(const Game&);
     ~Game();
 
     int get_map_size() const;
@@ -50,6 +51,7 @@ public:
     bool valid_shot(std::string) const;
     void move_player(char);
     void fire_arrow(char);
+    void reset_game();
 };
 
 std::ostream& operator<<(std::ostream&, const Game& game);
