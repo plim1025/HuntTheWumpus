@@ -61,7 +61,7 @@ Game& Game::operator=(const Game& old_game) {
     events[3] = new Pit();
     events[4] = new Pit();
     events[5] = new Gold();
-    map = std::vector<std::vector<Room>>();
+    map = std::vector<std::vector<Room> >();
     fill_map();
     fill_events();
     wumpus_killed = false;
@@ -355,6 +355,6 @@ int Game::get_y_pos() const {
 }
 
 // Returns entire 2D vector of rooms
-std::vector<std::vector<Room>> Game::get_map() const {
+std::vector<std::vector<Room> > Game::get_map() const {
     return map;
 }

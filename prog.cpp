@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include "game.h"
 #include "room.h"
 #include "event.h"

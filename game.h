@@ -14,7 +14,7 @@ class Game {
 private:
     int map_size;
     bool debug_mode;
-    std::vector<std::vector<Room>> map;
+    std::vector<std::vector<Room> > map;
     bool wumpus_killed;
     bool gold_taken;
     int spawn_x;
@@ -31,7 +31,7 @@ public:
     ~Game();
 
     int get_map_size() const;
-    std::vector<std::vector<Room>> get_map() const;
+    std::vector<std::vector<Room> > get_map() const;
     bool get_debug_mode() const;
     int get_x_pos() const;
     int get_y_pos() const;
