@@ -1,3 +1,9 @@
+/*
+ * Author: Paul Lim
+ * Date: 2/22/2020
+ * Description: Hunt the Wumpus, a game where a player is trapped in a cave with a wumpus, gold, and a couple of event rooms
+*/ 
+
 #include <iostream>
 #include <cstdlib>
 #include "game.h"
